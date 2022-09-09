@@ -1,5 +1,17 @@
 {
-    "editor.fontLigatures": false,
-    "editor.formatOnSave": true,
-    "prettier.jsxSingleQuote": true
+  "editor.fontLigatures": false,
+  "editor.formatOnSave": true,
+  "prettier.jsxSingleQuote": true,
+  "editor.cursorStyle": "line",
+  "editor.autoClosingBrackets": "always",
+  "editor.autoClosingDelete": "always",
+  "editor.autoClosingQuotes": "always",
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+  "editor.codeActionsOnSave": {},
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true,
+  "extensions.experimental.useUtilityProcess": false,
+  "prettier.singleAttributePerLine": true,
+  "prettier.tabWidth": 4
 }
