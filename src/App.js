@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import Header from "./components/Header";
 import Drawer from "./components/Drawer";
 import Card from "./components/Card";
@@ -6,13 +7,20 @@ import Card from "./components/Card";
 function App() {
     const [items, setItems] = React.useState([]);
     const [cartItems, setCartItems] = React.useState([]);
+    const [favoriteItems, setFavoriteItems] = React.useState([]);
+    const [searchValue, setSearchValue] = React.useState("");
     const [cartOpened, setCartOpened] = React.useState(false);
 
     React.useEffect(() => {
-        fetch("https://631b33f2fae3df4dcff7d120.mockapi.io/sneakers")
-            .then((res) => res.json())
-            .then((data) => {
-                setItems(data);
+        axios
+            .get("https://631b33f2fae3df4dcff7d120.mockapi.io/sneakers")
+            .then((res) => {
+                setItems(res.data);
+            });
+        axios
+            .get("https://631b33f2fae3df4dcff7d120.mockapi.io/cart")
+            .then((res) => {
+                setCartItems(res.data);
             });
     }, []);
 
@@ -30,12 +38,41 @@ function App() {
         if (flag) return;
 
         setCartItems((prev) => [...prev, obj]);
+
+        axios.post("https://631b33f2fae3df4dcff7d120.mockapi.io/cart", obj);
     };
 
-    const removeFromCart = (obj) => {
-        let newCartItems = cartItems.filter(item => item != obj);
-        setCartItems(newCartItems);
-    } 
+    const removeFromCart = (id) => {
+        setCartItems((prev) => prev.filter((item) => item.id !== id));
+
+        axios.delete(`https://631b33f2fae3df4dcff7d120.mockapi.io/cart/${id}`);
+    };
+    
+    const addToFavorite = (obj) => {
+        // console.log('add', obj);
+        let flag = false;
+
+        favoriteItems.forEach((item) => {
+            if (item === obj) flag = true;
+        });
+
+        if (flag) return;
+
+        setFavoriteItems((prev) => [...prev, obj]);
+
+        // axios.post("https://631b33f2fae3df4dcff7d120.mockapi.io/favorites", obj);
+    };
+
+    const removeFromFavorite = (id) => {
+        // console.log('remove', id);
+        setFavoriteItems((prev) => prev.filter((item) => item.id !== id));
+
+        // axios.delete(`https://631b33f2fae3df4dcff7d120.mockapi.io/favorites/${id}`);
+    };
+
+    const onChangeSearchInput = (event) => {
+        setSearchValue(event.target.value);
+    };
 
     return (
         <div className='wrapper clear'>
@@ -43,13 +80,18 @@ function App() {
                 <Drawer
                     items={cartItems}
                     toggleCart={toggleCart}
+                    removeFromCart={removeFromCart}
                 />
             )}
             <Header toggleCart={toggleCart} />
 
             <div className='content p-40'>
                 <div className='d-flex justify-between align-center mb-40'>
-                    <h1>All sneakers</h1>
+                    <h1>
+                        {searchValue
+                            ? `Search by: ${searchValue}`
+                            : "All sneakers"}
+                    </h1>
                     <div className='search-block d-flex'>
                         <img
                             src='/img/search.svg'
@@ -57,22 +99,41 @@ function App() {
                         />
                         <input
                             type='text'
-                            placeholder='Search'
+                            placeholder='Search...'
+                            value={searchValue}
+                            onInput={onChangeSearchInput}
                         />
+                        {searchValue && (
+                            <img
+                                className='removeBtn cu-p'
+                                src='/img/btn-remove.svg'
+                                onClick={() => setSearchValue("")}
+                                alt='Clear'
+                            />
+                        )}
                     </div>
                 </div>
 
                 <div className='d-flex flex-wrap'>
-                    {items.map((obj) => (
-                        <Card
-                            title={obj.title}
-                            price={obj.price}
-                            src={obj.src}
-                            addToCart={() => addToCart(obj)}
-                            removeFromCart={() => removeFromCart(obj)}
-                            addToFavorite={() => console.log("fav")}
-                        />
-                    ))}
+                    {items
+                        .filter((obj) =>
+                            obj.title
+                                .toLowerCase()
+                                .includes(searchValue.toLowerCase())
+                        )
+                        .map((obj) => (
+                            <Card
+                                id={obj.id}
+                                key={obj.title}
+                                title={obj.title}
+                                price={obj.price}
+                                src={obj.src}
+                                addToCart={() => addToCart(obj)}
+                                removeFromCart={(id) => removeFromCart(id)}
+                                addToFavorite={() => addToFavorite(obj)}
+                                removeFromFavorite={(id) => removeFromFavorite(id)}
+                            />
+                        ))}
                 </div>
             </div>
         </div>

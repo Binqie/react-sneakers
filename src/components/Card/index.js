@@ -1,15 +1,25 @@
 import React from "react";
 import Classes from "./Card.module.scss";
 
-function Card({ title, price, src, addToCart, addToFavorite, removeFromCart}) {
+function Card({id, title, price, src, addToCart, addToFavorite, removeFromCart, removeFromFavorite}) {
     const [isAdded, setIsAdded] = React.useState(false);
+    const [isFavorite, setIsFavorite] = React.useState(false);
 
     const onClickPlus = () => {
         setIsAdded(!isAdded);
         if (isAdded) { 
-            removeFromCart()
+            removeFromCart(id)
         } else {
             addToCart();
+        }
+    };
+
+    const onClickFavorite = () => {
+        setIsFavorite(!isFavorite);
+        if (isFavorite) { 
+            removeFromFavorite(id)
+        } else {
+            addToFavorite();
         }
     };
 
@@ -20,8 +30,13 @@ function Card({ title, price, src, addToCart, addToFavorite, removeFromCart}) {
                 onClick={addToFavorite}
             >
                 <img
-                    src='/img/heart-unliked.svg'
+                    src={
+                        isFavorite
+                            ? "/img/heart-liked.svg"
+                            : "/img/heart-unliked.svg"
+                    }
                     alt='Unliked'
+                    onClick={onClickFavorite}
                 />
             </div>
             <img

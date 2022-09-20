@@ -1,4 +1,4 @@
-function Drawer({toggleCart, items = []}) {
+function Drawer({ toggleCart, removeFromCart, items = [] }) {
     return (
         <div className='overlay'>
             <div className='drawer'>
@@ -12,53 +12,80 @@ function Drawer({toggleCart, items = []}) {
                     />
                 </h2>
 
-                <div className='items mb-40'>
-                    {items.map((obj) => {
-                        return (
-                            <div className='cartItem d-flex align-center mb-20'>
-                                <div
-                                    style={{
-                                        backgroundImage: `url(${obj.src})`,
-                                    }}
-                                    className='cartItemImg'
-                                ></div>
+                {items.length > 0 ? (
+                    <>
+                        <div className='items mb-40'>
+                            {items.map((obj) => {
+                                return (
+                                    <div className='cartItem d-flex align-center mb-20'>
+                                        <div
+                                            style={{
+                                                backgroundImage: `url(${obj.src})`,
+                                            }}
+                                            className='cartItemImg'
+                                        ></div>
 
-                                <div className='mr-20 flex'>
-                                    <p className='mb-5'>{obj.title}</p>
-                                    <b>{obj.price} rub</b>
-                                </div>
+                                        <div className='mr-20 flex'>
+                                            <p className='mb-5'>{obj.title}</p>
+                                            <b>{obj.price} rub</b>
+                                        </div>
+                                        <img
+                                            className='removeBtn'
+                                            src='/img/btn-remove.svg'
+                                            alt='Remove'
+                                            onClick={() =>
+                                                removeFromCart(obj.id)
+                                            }
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <div className='cartTotalBlock'>
+                            <ul>
+                                <li>
+                                    <span>Total:</span>
+                                    <div></div>
+                                    <b>21 498 rub</b>
+                                </li>
+                                <li>
+                                    <span>Tax 5%:</span>
+                                    <div></div>
+                                    <b>1074 rub</b>
+                                </li>
+                            </ul>
+
+                            <button className='btn-order'>
+                                Order{" "}
                                 <img
-                                    className='removeBtn'
-                                    src='/img/btn-remove.svg'
-                                    alt='Remove'
+                                    src='/img/arrow.svg'
+                                    alt='Arrow'
                                 />
-                            </div>
-                        );
-                    })}
-                </div>
-
-                <div className='cartTotalBlock'>
-                    <ul>
-                        <li>
-                            <span>Total:</span>
-                            <div></div>
-                            <b>21 498 rub</b>
-                        </li>
-                        <li>
-                            <span>Tax 5%:</span>
-                            <div></div>
-                            <b>1074 rub</b>
-                        </li>
-                    </ul>
-
-                    <button className='btn-order'>
-                        Order{" "}
+                            </button>
+                        </div>
+                    </>
+                ) : (
+                    <div className='cartEmpty d-flex align-center justify-center flex-column flex'>
                         <img
-                            src='/img/arrow.svg'
-                            alt='Arrow'
+                            className='mb-20'
+                            width={120}
+                            height={120}
+                            src='/img/cartEmpty.jpg'
                         />
-                    </button>
-                </div>
+                        <h2>Cart is empty...</h2>
+                        <p className='opacity-6'>
+                            Add at least one product to make an order!
+                        </p>
+                        <button className='greenButton btn-order'>
+                            <img
+                                src='/img/arrow.svg'
+                                alt='Arrow'
+                            />
+                            Return back
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );
