@@ -1,23 +1,33 @@
 import React from "react";
 import Classes from "./Card.module.scss";
 
-function Card({id, title, price, src, addToCart, addToFavorite, removeFromCart, removeFromFavorite}) {
+function Card({
+    id,
+    title,
+    price,
+    src,
+    addToCart,
+    addToFavorite,
+    removeFromCart,
+    removeFromFavorite,
+}) {
     const [isAdded, setIsAdded] = React.useState(false);
     const [isFavorite, setIsFavorite] = React.useState(false);
 
     const onClickPlus = () => {
         setIsAdded(!isAdded);
-        if (isAdded) { 
-            removeFromCart(id)
+        if (isAdded) {
+            removeFromCart(id);
         } else {
             addToCart();
         }
     };
 
-    const onClickFavorite = () => {
+    const onClickFavorite = (event) => {
+        event.stopPropagation();
         setIsFavorite(!isFavorite);
-        if (isFavorite) { 
-            removeFromFavorite(id)
+        if (isFavorite) {
+            removeFromFavorite(id);
         } else {
             addToFavorite();
         }

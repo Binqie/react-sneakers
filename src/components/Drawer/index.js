@@ -17,7 +17,7 @@ function Drawer({ toggleCart, removeFromCart, items = [] }) {
                         <div className='items mb-40'>
                             {items.map((obj) => {
                                 return (
-                                    <div className='cartItem d-flex align-center mb-20'>
+                                    <div key={obj.title} className='cartItem d-flex align-center mb-20'>
                                         <div
                                             style={{
                                                 backgroundImage: `url(${obj.src})`,

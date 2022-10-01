@@ -1,8 +1,12 @@
 import React from "react";
+import { Route, Routes } from "react-router-dom";
 import axios from "axios";
 import Header from "./components/Header";
 import Drawer from "./components/Drawer";
-import Card from "./components/Card";
+// import Card from "./components/Card";
+import Home from "./pages/Home";
+import Favorites from "./pages/Favorites";
+import Error from "./pages/Error";
 
 function App() {
     const [items, setItems] = React.useState([]);
@@ -47,9 +51,9 @@ function App() {
 
         axios.delete(`https://631b33f2fae3df4dcff7d120.mockapi.io/cart/${id}`);
     };
-    
+
     const addToFavorite = (obj) => {
-        // console.log('add', obj);
+        console.log("add", obj);
         let flag = false;
 
         favoriteItems.forEach((item) => {
@@ -60,14 +64,19 @@ function App() {
 
         setFavoriteItems((prev) => [...prev, obj]);
 
-        // axios.post("https://631b33f2fae3df4dcff7d120.mockapi.io/favorites", obj);
+        axios.post(
+            "https://631b33f2fae3df4dcff7d120.mockapi.io/favorites",
+            obj
+        );
     };
 
     const removeFromFavorite = (id) => {
-        // console.log('remove', id);
+        console.log("remove", id);
         setFavoriteItems((prev) => prev.filter((item) => item.id !== id));
 
-        // axios.delete(`https://631b33f2fae3df4dcff7d120.mockapi.io/favorites/${id}`);
+        axios.delete(
+            `https://631b33f2fae3df4dcff7d120.mockapi.io/favorites/${id}`
+        );
     };
 
     const onChangeSearchInput = (event) => {
@@ -84,58 +93,32 @@ function App() {
                 />
             )}
             <Header toggleCart={toggleCart} />
-
-            <div className='content p-40'>
-                <div className='d-flex justify-between align-center mb-40'>
-                    <h1>
-                        {searchValue
-                            ? `Search by: ${searchValue}`
-                            : "All sneakers"}
-                    </h1>
-                    <div className='search-block d-flex'>
-                        <img
-                            src='/img/search.svg'
-                            alt='Search'
+            <Routes>
+                <Route
+                    exact
+                    path='/'
+                    element={
+                        <Home
+                            items={items}
+                            searchValue={searchValue}
+                            setSearchValue={setSearchValue}
+                            addToCart={addToCart}
+                            removeFromCart={removeFromCart}
+                            addToFavorite={addToFavorite}
+                            removeFromFavorite={removeFromFavorite}
+                            onChangeSearchInput={onChangeSearchInput}
                         />
-                        <input
-                            type='text'
-                            placeholder='Search...'
-                            value={searchValue}
-                            onInput={onChangeSearchInput}
-                        />
-                        {searchValue && (
-                            <img
-                                className='removeBtn cu-p'
-                                src='/img/btn-remove.svg'
-                                onClick={() => setSearchValue("")}
-                                alt='Clear'
-                            />
-                        )}
-                    </div>
-                </div>
-
-                <div className='d-flex flex-wrap'>
-                    {items
-                        .filter((obj) =>
-                            obj.title
-                                .toLowerCase()
-                                .includes(searchValue.toLowerCase())
-                        )
-                        .map((obj) => (
-                            <Card
-                                id={obj.id}
-                                key={obj.title}
-                                title={obj.title}
-                                price={obj.price}
-                                src={obj.src}
-                                addToCart={() => addToCart(obj)}
-                                removeFromCart={(id) => removeFromCart(id)}
-                                addToFavorite={() => addToFavorite(obj)}
-                                removeFromFavorite={(id) => removeFromFavorite(id)}
-                            />
-                        ))}
-                </div>
-            </div>
+                    }
+                ></Route>
+                <Route
+                    path='/favorites'
+                    element={<Favorites />}
+                ></Route>
+                <Route
+                    path='*'
+                    element={<Error />}
+                ></Route>
+            </Routes>
         </div>
     );
 }
