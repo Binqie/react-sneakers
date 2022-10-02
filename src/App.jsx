@@ -37,17 +37,39 @@ function App() {
         setCartOpened(!cartOpened);
     };
 
-    const onClickPlus = (obj) => {
-        if (cartItems.find((item) => item.id === obj.id)) {
-            axios.delete(
-                `https://631b33f2fae3df4dcff7d120.mockapi.io/cart/${obj.id}`
-            );
-            setCartItems((prev) => prev.filter((item) => item.id !== obj.id))
-        } else {
-            axios.post('https://631b33f2fae3df4dcff7d120.mockapi.io/cart', obj)
-            setCartItems((prev) => [...prev, obj])
+    // const onClickPlus = (obj) => {
+    //     if (cartItems.find((item) => item.id === obj.id)) {
+    //         axios.delete(
+    //             `https://631b33f2fae3df4dcff7d120.mockapi.io/cart/${obj.id}`
+    //         );
+    //         setCartItems((prev) => prev.filter((item) => item.id !== obj.id))
+    //     } else {
+    //         axios.post('https://631b33f2fae3df4dcff7d120.mockapi.io/cart', obj)
+    //         setCartItems((prev) => [...prev, obj])
+    //     }
+    // }
+
+    const onClickPlus = async (obj) => {
+        try {
+            if (cartItems.find((item) => item.id === obj.id)) {
+                axios.delete(
+                    `https://631b33f2fae3df4dcff7d120.mockapi.io/cart/${obj.id}`
+                );
+                setCartItems((prev) =>
+                    prev.filter((item) => item.id !== obj.id)
+                );
+            } else {
+                const { data } = await axios.post(
+                    "https://631b33f2fae3df4dcff7d120.mockapi.io/cart",
+                    obj
+                );
+
+                setCartItems((prev) => [...prev, data]);
+            }
+        } catch (error) {
+            alert('Error: ' + error)
         }
-    }
+    };
 
     const onClickFavorite = async (obj) => {
         try {
