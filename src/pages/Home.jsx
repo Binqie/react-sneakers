@@ -5,10 +5,8 @@ function Home({
     searchValue,
     onChangeSearchInput,
     setSearchValue,
-    addToCart,
-    removeFromCart,
-    addToFavorite,
-    removeFromFavorite,
+    onClickPlus,
+    onClickFavorite,
 }) {
     return (
         <div className='content p-40'>
@@ -40,24 +38,21 @@ function Home({
             <div className='d-flex flex-wrap'>
                 {items
                     .filter((obj) =>
-                        obj.title.toLowerCase().includes(searchValue.toLowerCase())
+                        obj.title
+                            .toLowerCase()
+                            .includes(searchValue.toLowerCase())
                     )
                     .map((obj) => (
                         <Card
-                            id={obj.id}
                             key={obj.title}
-                            title={obj.title}
-                            price={obj.price}
-                            src={obj.src}
-                            addToCart={() => addToCart(obj)}
-                            removeFromCart={(id) => removeFromCart(id)}
-                            addToFavorite={() => addToFavorite(obj)}
-                            removeFromFavorite={(id) => removeFromFavorite(id)}
+                            onClickPlus={onClickPlus}
+                            onClickFavorite={onClickFavorite}
+                            {...obj}
                         />
                     ))}
             </div>
         </div>
-    )
+    );
 }
 
 export default Home;

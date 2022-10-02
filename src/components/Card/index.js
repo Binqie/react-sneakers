@@ -6,38 +6,29 @@ function Card({
     title,
     price,
     src,
-    addToCart,
-    addToFavorite,
-    removeFromCart,
-    removeFromFavorite,
+    onClickPlus,
+    onClickFavorite,
+    favorite = false,
 }) {
     const [isAdded, setIsAdded] = React.useState(false);
-    const [isFavorite, setIsFavorite] = React.useState(false);
+    const [isFavorite, setIsFavorite] = React.useState(favorite);
 
-    const onClickPlus = () => {
+    const onPlus = () => {
         setIsAdded(!isAdded);
-        if (isAdded) {
-            removeFromCart(id);
-        } else {
-            addToCart();
-        }
+        onClickPlus({ id, title, src, price, favorite });
     };
 
-    const onClickFavorite = (event) => {
+    const onFavorite = (event) => {
         event.stopPropagation();
         setIsFavorite(!isFavorite);
-        if (isFavorite) {
-            removeFromFavorite(id);
-        } else {
-            addToFavorite();
-        }
+        onClickFavorite({id, title, src, price, favorite});
     };
 
     return (
         <div className={Classes.card}>
             <div
                 className={Classes.favorite}
-                onClick={addToFavorite}
+                onClick={onFavorite}
             >
                 <img
                     src={
@@ -46,7 +37,6 @@ function Card({
                             : "/img/heart-unliked.svg"
                     }
                     alt='Unliked'
-                    onClick={onClickFavorite}
                 />
             </div>
             <img
@@ -63,7 +53,7 @@ function Card({
                 </div>
                 <img
                     className={Classes.plus}
-                    onClick={onClickPlus}
+                    onClick={onPlus}
                     alt='Plus'
                     src={isAdded ? "/img/btn-checked.svg" : "/img/btn-plus.svg"}
                 />

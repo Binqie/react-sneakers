@@ -26,57 +26,46 @@ function App() {
             .then((res) => {
                 setCartItems(res.data);
             });
+        axios
+            .get("https://631b33f2fae3df4dcff7d120.mockapi.io/favorites")
+            .then((res) => {
+                setFavoriteItems(res.data);
+            });
     }, []);
 
     const toggleCart = () => {
         setCartOpened(!cartOpened);
     };
 
-    const addToCart = (obj) => {
-        let flag = false;
+    const onClickPlus = (obj) => {
+        if (cartItems.find((item) => item.id === obj.id)) {
+            axios.delete(
+                `https://631b33f2fae3df4dcff7d120.mockapi.io/cart/${obj.id}`
+            );
+            setCartItems((prev) => prev.filter((item) => item.id !== obj.id))
+        } else {
+            axios.post('https://631b33f2fae3df4dcff7d120.mockapi.io/cart', obj)
+            setCartItems((prev) => [...prev, obj])
+        }
+    }
 
-        cartItems.forEach((item) => {
-            if (item === obj) flag = true;
-        });
+    const onClickFavorite = async (obj) => {
+        try {
+            if (favoriteItems.find((item) => item.id === obj.id)) {
+                axios.delete(
+                    `https://631b33f2fae3df4dcff7d120.mockapi.io/favorites/${obj.id}`
+                );
+            } else {
+                const { data } = await axios.post(
+                    "https://631b33f2fae3df4dcff7d120.mockapi.io/favorites",
+                    obj
+                );
 
-        if (flag) return;
-
-        setCartItems((prev) => [...prev, obj]);
-
-        axios.post("https://631b33f2fae3df4dcff7d120.mockapi.io/cart", obj);
-    };
-
-    const removeFromCart = (id) => {
-        setCartItems((prev) => prev.filter((item) => item.id !== id));
-
-        axios.delete(`https://631b33f2fae3df4dcff7d120.mockapi.io/cart/${id}`);
-    };
-
-    const addToFavorite = (obj) => {
-        console.log("add", obj);
-        let flag = false;
-
-        favoriteItems.forEach((item) => {
-            if (item === obj) flag = true;
-        });
-
-        if (flag) return;
-
-        setFavoriteItems((prev) => [...prev, obj]);
-
-        axios.post(
-            "https://631b33f2fae3df4dcff7d120.mockapi.io/favorites",
-            obj
-        );
-    };
-
-    const removeFromFavorite = (id) => {
-        console.log("remove", id);
-        setFavoriteItems((prev) => prev.filter((item) => item.id !== id));
-
-        axios.delete(
-            `https://631b33f2fae3df4dcff7d120.mockapi.io/favorites/${id}`
-        );
+                setFavoriteItems((prev) => [...prev, data]);
+            }
+        } catch (error) {
+            alert('Error: ' + error)
+        }
     };
 
     const onChangeSearchInput = (event) => {
@@ -89,7 +78,7 @@ function App() {
                 <Drawer
                     items={cartItems}
                     toggleCart={toggleCart}
-                    removeFromCart={removeFromCart}
+                    onClickPlus={onClickPlus}
                 />
             )}
             <Header toggleCart={toggleCart} />
@@ -102,17 +91,21 @@ function App() {
                             items={items}
                             searchValue={searchValue}
                             setSearchValue={setSearchValue}
-                            addToCart={addToCart}
-                            removeFromCart={removeFromCart}
-                            addToFavorite={addToFavorite}
-                            removeFromFavorite={removeFromFavorite}
+                            onClickPlus={onClickPlus}
+                            onClickFavorite={onClickFavorite}
                             onChangeSearchInput={onChangeSearchInput}
                         />
                     }
                 ></Route>
                 <Route
                     path='/favorites'
-                    element={<Favorites />}
+                    element={
+                        <Favorites
+                            items={favoriteItems}
+                            onClickPlus={onClickPlus}
+                            onClickFavorite={onClickFavorite}
+                        />
+                    }
                 ></Route>
                 <Route
                     path='*'

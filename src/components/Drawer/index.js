@@ -1,4 +1,4 @@
-function Drawer({ toggleCart, removeFromCart, items = [] }) {
+function Drawer({ toggleCart, onClickPlus, items = [] }) {
     return (
         <div className='overlay'>
             <div className='drawer'>
@@ -17,7 +17,10 @@ function Drawer({ toggleCart, removeFromCart, items = [] }) {
                         <div className='items mb-40'>
                             {items.map((obj) => {
                                 return (
-                                    <div key={obj.title} className='cartItem d-flex align-center mb-20'>
+                                    <div
+                                        key={obj.title}
+                                        className='cartItem d-flex align-center mb-20'
+                                    >
                                         <div
                                             style={{
                                                 backgroundImage: `url(${obj.src})`,
@@ -33,9 +36,7 @@ function Drawer({ toggleCart, removeFromCart, items = [] }) {
                                             className='removeBtn'
                                             src='/img/btn-remove.svg'
                                             alt='Remove'
-                                            onClick={() =>
-                                                removeFromCart(obj.id)
-                                            }
+                                            onClick={() => onClickPlus(obj)}
                                         />
                                     </div>
                                 );
