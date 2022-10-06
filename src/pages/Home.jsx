@@ -7,7 +7,11 @@ function Home({
     setSearchValue,
     onClickPlus,
     onClickFavorite,
+    isLoading,
 }) {
+    const renderItems = () => {
+        const filteredItems = items.filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase))
+    }
     return (
         <div className='content p-40'>
             <div className='d-flex justify-between align-center mb-40'>
@@ -36,17 +40,13 @@ function Home({
                 </div>
             </div>
             <div className='d-flex flex-wrap'>
-                {items
-                    .filter((obj) =>
-                        obj.title
-                            .toLowerCase()
-                            .includes(searchValue.toLowerCase())
-                    )
+                {filteredItems
                     .map((obj) => (
                         <Card
                             key={obj.title}
                             onClickPlus={onClickPlus}
                             onClickFavorite={onClickFavorite}
+                            loading={isLoading}
                             {...obj}
                         />
                     ))}
