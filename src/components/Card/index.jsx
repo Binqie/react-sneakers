@@ -1,6 +1,7 @@
 import React from "react";
 import Classes from "./Card.module.scss";
 import ContentLoader from "react-content-loader";
+import AppContext from "../../Context";
 
 function Card({
     id,
@@ -12,6 +13,8 @@ function Card({
     favorite = false,
     loading = false,
 }) {
+    const state = React.useContext(AppContext)
+
     const [isAdded, setIsAdded] = React.useState(false);
     const [isFavorite, setIsFavorite] = React.useState(favorite);
 

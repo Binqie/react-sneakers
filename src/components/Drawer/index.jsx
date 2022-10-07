@@ -1,4 +1,9 @@
-function Drawer({ toggleCart, onClickPlus, items = [] }) {
+import React from "react";
+import AppContext from '../../Context'
+
+function Drawer({ toggleCart, onClickPlus }) {
+    const { cartItems } = React.useContext(AppContext);
+
     return (
         <div className='overlay'>
             <div className='drawer'>
@@ -12,10 +17,10 @@ function Drawer({ toggleCart, onClickPlus, items = [] }) {
                     />
                 </h2>
 
-                {items.length > 0 ? (
+                {cartItems.length > 0 ? (
                     <>
                         <div className='items mb-40'>
-                            {items.map((obj) => {
+                            {cartItems.map((obj) => {
                                 return (
                                     <div
                                         key={obj.title}
