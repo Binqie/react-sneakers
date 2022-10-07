@@ -16,8 +16,6 @@ function App() {
     const [cartOpened, setCartOpened] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
 
-    const AppContext = React.createContext({});
-
     React.useEffect(() => {
         (async () => {
             const cartRes = await axios.get(
@@ -28,12 +26,12 @@ function App() {
             );
             const itemsRes = await axios.get(
                 "https://631b33f2fae3df4dcff7d120.mockapi.io/sneakers"
-            );
+            )
 
-            setIsLoading(false);
             setCartItems(cartRes.data);
             setFavoriteItems(favoritesRes.data);
             setItems(itemsRes.data);
+            setIsLoading(false);
         })();
     }, []);
 
@@ -65,7 +63,9 @@ function App() {
 
     const onClickFavorite = async (obj) => {
         try {
-            if (favoriteItems.find((item) => Number(item.id) === Number(obj.id))) {
+            if (
+                favoriteItems.find((item) => Number(item.id) === Number(obj.id))
+            ) {
                 axios.delete(
                     `https://631b33f2fae3df4dcff7d120.mockapi.io/favorites/${obj.id}`
                 );
@@ -87,49 +87,47 @@ function App() {
     };
 
     return (
-        <AppContext.Provider>
-            <div className='wrapper clear'>
-                {cartOpened && (
-                    <Drawer
-                        items={cartItems}
-                        toggleCart={toggleCart}
-                        onClickPlus={onClickPlus}
-                    />
-                )}
-                <Header toggleCart={toggleCart} />
-                <Routes>
-                    <Route
-                        exact
-                        path='/'
-                        element={
-                            <Home
-                                items={items}
-                                searchValue={searchValue}
-                                setSearchValue={setSearchValue}
-                                onClickPlus={onClickPlus}
-                                onClickFavorite={onClickFavorite}
-                                onChangeSearchInput={onChangeSearchInput}
-                                isLoading={isLoading}
-                            />
-                        }
-                    ></Route>
-                    <Route
-                        path='/favorites'
-                        element={
-                            <Favorites
-                                items={favoriteItems}
-                                onClickPlus={onClickPlus}
-                                onClickFavorite={onClickFavorite}
-                            />
-                        }
-                    ></Route>
-                    <Route
-                        path='*'
-                        element={<Error />}
-                    ></Route>
-                </Routes>
-            </div>
-        </AppContext.Provider>
+        <div className='wrapper clear'>
+            {cartOpened && (
+                <Drawer
+                    items={cartItems}
+                    toggleCart={toggleCart}
+                    onClickPlus={onClickPlus}
+                />
+            )}
+            <Header toggleCart={toggleCart} />
+            <Routes>
+                <Route
+                    exact
+                    path='/'
+                    element={
+                        <Home
+                            items={items}
+                            searchValue={searchValue}
+                            setSearchValue={setSearchValue}
+                            onClickPlus={onClickPlus}
+                            onClickFavorite={onClickFavorite}
+                            onChangeSearchInput={onChangeSearchInput}
+                            isLoading={isLoading}
+                        />
+                    }
+                ></Route>
+                <Route
+                    path='/favorites'
+                    element={
+                        <Favorites
+                            items={favoriteItems}
+                            onClickPlus={onClickPlus}
+                            onClickFavorite={onClickFavorite}
+                        />
+                    }
+                ></Route>
+                <Route
+                    path='*'
+                    element={<Error />}
+                ></Route>
+            </Routes>
+        </div>
     );
 }
 

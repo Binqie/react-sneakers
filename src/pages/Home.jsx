@@ -10,7 +10,16 @@ function Home({
     isLoading,
 }) {
     const renderItems = () => {
-        const filteredItems = items.filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase))
+        const filteredItems = items.filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase()));
+        return (isLoading ? [...Array(8)] : filteredItems).map((obj, index) => (
+                        <Card
+                            key={index}
+                            onClickPlus={onClickPlus}
+                            onClickFavorite={onClickFavorite}
+                            loading={isLoading}
+                            {...obj}
+                        />
+                    ))
     }
     return (
         <div className='content p-40'>
@@ -40,16 +49,7 @@ function Home({
                 </div>
             </div>
             <div className='d-flex flex-wrap'>
-                {filteredItems
-                    .map((obj) => (
-                        <Card
-                            key={obj.title}
-                            onClickPlus={onClickPlus}
-                            onClickFavorite={onClickFavorite}
-                            loading={isLoading}
-                            {...obj}
-                        />
-                    ))}
+                {renderItems()}
             </div>
         </div>
     );
