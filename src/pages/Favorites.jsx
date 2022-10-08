@@ -2,8 +2,8 @@ import React from "react";
 import Card from "../components/Card";
 import AppContext from "../Context";
 
-function Favorites({ onClickPlus, onClickFavorite }) {
-    const {favoriteItems} = React.useContext(AppContext)
+function Favorites() {
+    const { favoriteItems } = React.useContext(AppContext);
 
     return (
         <div className='content p-40'>
@@ -14,8 +14,7 @@ function Favorites({ onClickPlus, onClickFavorite }) {
                 {favoriteItems.map((obj) => (
                     <Card
                         key={obj.title}
-                        onClickPlus={onClickPlus}
-                        onClickFavorite={onClickFavorite}
+                        favorite
                         {...obj}
                     />
                 ))}

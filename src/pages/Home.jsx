@@ -2,16 +2,14 @@ import React from "react";
 import Card from "../components/Card";
 import AppContext from "../Context";
 
-function Home({
-    items,
-    searchValue,
-    onChangeSearchInput,
-    setSearchValue,
-    onClickPlus,
-    onClickFavorite,
-    isLoading,
-}) {
-    const { isItemAdded } = React.useContext(AppContext)
+function Home() {
+    const {
+        items,
+        searchValue,
+        onChangeSearchInput,
+        setSearchValue,
+        isLoading,
+    } = React.useContext(AppContext);
 
     const renderItems = () => {
         const filteredItems = items.filter((item) =>
@@ -20,10 +18,6 @@ function Home({
         return (isLoading ? [...Array(8)] : filteredItems).map((obj, index) => (
             <Card
                 key={index}
-                onClickPlus={onClickPlus}
-                onClickFavorite={onClickFavorite}
-                loading={isLoading}
-                added={isItemAdded(obj && obj.id)}
                 {...obj}
             />
         ));

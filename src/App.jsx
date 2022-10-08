@@ -29,7 +29,7 @@ function App() {
             );
             const itemsRes = await axios.get(
                 "https://631b33f2fae3df4dcff7d120.mockapi.io/sneakers"
-            )
+            );
 
             setCartItems(cartRes.data);
             setFavoriteItems(favoritesRes.data);
@@ -72,6 +72,10 @@ function App() {
                 axios.delete(
                     `https://631b33f2fae3df4dcff7d120.mockapi.io/favorites/${obj.id}`
                 );
+
+                setFavoriteItems((prev) =>
+                    prev.filter((item) => item.id !== obj.id)
+                );
             } else {
                 const { data } = await axios.post(
                     "https://631b33f2fae3df4dcff7d120.mockapi.io/favorites",
@@ -91,43 +95,37 @@ function App() {
 
     const isItemAdded = (id) => {
         return cartItems.some((item) => Number(item.id) === Number(id));
-    }
+    };
 
     return (
-        <AppContext.Provider value={{items, cartItems, favoriteItems, isItemAdded}}>
+        <AppContext.Provider
+            value={{
+                items,
+                cartItems,
+                setCartItems,
+                favoriteItems,
+                isItemAdded,
+                onClickFavorite,
+                onClickPlus,
+                toggleCart,
+                searchValue,
+                setSearchValue,
+                onChangeSearchInput,
+                isLoading,
+            }}
+        >
             <div className='wrapper clear'>
-                {cartOpened && (
-                    <Drawer
-                        items={cartItems}
-                        toggleCart={toggleCart}
-                        onClickPlus={onClickPlus}
-                    />
-                )}
-                <Header toggleCart={toggleCart} />
+                {cartOpened && <Drawer />}
+                <Header />
                 <Routes>
                     <Route
                         exact
                         path='/'
-                        element={
-                            <Home
-                                items={items}
-                                searchValue={searchValue}
-                                setSearchValue={setSearchValue}
-                                onClickPlus={onClickPlus}
-                                onClickFavorite={onClickFavorite}
-                                onChangeSearchInput={onChangeSearchInput}
-                                isLoading={isLoading}
-                            />
-                        }
+                        element={<Home />}
                     ></Route>
                     <Route
                         path='/favorites'
-                        element={
-                            <Favorites
-                                onClickPlus={onClickPlus}
-                                onClickFavorite={onClickFavorite}
-                            />
-                        }
+                        element={<Favorites />}
                     ></Route>
                     <Route
                         path='*'

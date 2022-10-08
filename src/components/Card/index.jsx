@@ -8,18 +8,12 @@ function Card({
     title,
     price,
     src,
-    onClickPlus,
-    onClickFavorite,
     favorite = false,
-    loading = false,
-}) {
-    const state = React.useContext(AppContext)
-
-    const [isAdded, setIsAdded] = React.useState(false);
+}) { 
+    const { isItemAdded, onClickPlus, onClickFavorite, isLoading = false } = React.useContext(AppContext);
     const [isFavorite, setIsFavorite] = React.useState(favorite);
 
     const onPlus = () => {
-        setIsAdded(!isAdded);
         onClickPlus({ id, title, src, price, favorite });
     };
 
@@ -31,7 +25,7 @@ function Card({
 
     return (
         <div className={Classes.card}>
-            {loading ? (
+            {isLoading ? (
                 <ContentLoader
                     speed={2}
                     width={180}
@@ -121,7 +115,7 @@ function Card({
                             onClick={onPlus}
                             alt='Plus'
                             src={
-                                isAdded
+                                isItemAdded(id)
                                     ? "/img/btn-checked.svg"
                                     : "/img/btn-plus.svg"
                             }

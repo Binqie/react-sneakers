@@ -1,8 +1,38 @@
+import axios from "axios";
 import React from "react";
-import AppContext from '../../Context'
+import AppContext from "../../Context";
+import Info from "../Info/Info";
 
-function Drawer({ toggleCart, onClickPlus }) {
-    const { cartItems } = React.useContext(AppContext);
+function Drawer() {
+    const [ordered, setOrdered] = React.useState(false);
+    const [orderId, setOrderId] = React.useState(null);
+    const [isLoading, setIsLoading] = React.useState(false);
+    const { cartItems, onClickPlus, toggleCart, setCartItems } =
+        React.useContext(AppContext);
+
+    const onOrder = async (obj) => {
+        try {
+            setIsLoading(true);
+
+            const { data } = await axios.post(
+                "https://631b33f2fae3df4dcff7d120.mockapi.io/orders",
+                { items: cartItems }
+            );
+
+            setOrdered(true);
+            setCartItems([]);
+            setOrderId(data.id);
+
+            await axios.put(
+                "https://631b33f2fae3df4dcff7d120.mockapi.io/cart",
+                []
+            );
+        } catch (error) {
+            alert("Failed order!", Error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className='overlay'>
@@ -62,8 +92,12 @@ function Drawer({ toggleCart, onClickPlus }) {
                                 </li>
                             </ul>
 
-                            <button className='btn-order'>
-                                Order{" "}
+                            <button
+                                disabled={isLoading}
+                                onClick={onOrder}
+                                className='btn-order'
+                            >
+                                Order
                                 <img
                                     src='/img/arrow.svg'
                                     alt='Arrow'
@@ -72,25 +106,21 @@ function Drawer({ toggleCart, onClickPlus }) {
                         </div>
                     </>
                 ) : (
-                    <div className='cartEmpty d-flex align-center justify-center flex-column flex'>
-                        <img
-                            className='mb-20'
-                            width={120}
-                            height={120}
-                            src='/img/cartEmpty.jpg'
-                        />
-                        <h2>Cart is empty...</h2>
-                        <p className='opacity-6'>
-                            Add at least one product to make an order!
-                        </p>
-                        <button className='greenButton btn-order'>
-                            <img
-                                src='/img/arrow.svg'
-                                alt='Arrow'
-                            />
-                            Return back
-                        </button>
-                    </div>
+                    <Info
+                        title={
+                            ordered
+                                ? "Ordered successfully!"
+                                : "Cart is empty..."
+                        }
+                        img={
+                            ordered ? "/img/ordered.jpg" : "/img/cartEmpty.jpg"
+                        }
+                        description={
+                            ordered
+                                ? `Your order #${orderId} will be delivered in few hours.`
+                                : "Add at least one product to make an order!"
+                        }
+                    ></Info>
                 )}
             </div>
         </div>
